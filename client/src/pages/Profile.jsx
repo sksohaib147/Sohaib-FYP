@@ -535,6 +535,9 @@ const Profile = () => {
   const [listingsOpen, setListingsOpen] = useState(false);
   const [selectedListing, setSelectedListing] = useState(null);
   const [activeListings, setActiveListings] = useState([]);
+  // Detail modal state
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [detailLoading, setDetailLoading] = useState(false);
   // 3-dot menu state
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
   const [menuListingId, setMenuListingId] = useState(null);

@@ -50,17 +50,6 @@ const PetCard = ({ pet }) => {
     }
   };
 
-  const handleWishlistToggle = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    if (isInWishlist(pet._id)) {
-      removeFromWishlist(pet._id);
-    } else {
-      addToWishlist(pet);
-    }
-  };
-
   const getStatusColor = (status) => {
     switch (status) {
       case 'available':

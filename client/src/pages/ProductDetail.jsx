@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Typography, Button, useTheme } from '@mui/material';
 import { useNotification } from '../contexts/NotificationContext';
+import { useAuth } from '../contexts/AuthContext';
+import { useCart } from '../contexts/CartContext';
 import { formatPKR } from '../utils/currency';
 
 const ProductDetail = () => {
@@ -9,9 +11,12 @@ const ProductDetail = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
   const theme = useTheme();
   const navigate = useNavigate();
   const { notify } = useNotification();
+  const { user } = useAuth();
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -33,15 +38,15 @@ const ProductDetail = () => {
 
   const handleAddToCart = async () => {
     if (!user) {
-      navigate('/login', { state: { from: `/pet/${id}` } });
+      navigate('/login', { state: { from: `/product/${id}` } });
       return;
     }
 
-    if (pet.status !== 'available') return;
+    if (product.status !== 'available') return;
 
     setIsAddingToCart(true);
     try {
-      addToCart(pet, 'pet');
+      addToCart(product, 'product');
       notify('Product added to cart', 'success');
     } catch (error) {
       console.error('Error adding to cart:', error);
@@ -68,7 +73,15 @@ const ProductDetail = () => {
                 {product.pricePKR !== undefined && product.pricePKR !== null && product.pricePKR !== '' ? formatPKR(product.pricePKR) : ''}
               </Typography>
               <Typography color="text.primary" mb={4} sx={{ whiteSpace: 'pre-wrap' }}>{product.description}</Typography>
-              <Button variant="contained" color="error" sx={{ fontWeight: 600, py: 1.5, borderRadius: 2, width: { xs: '100%', md: '50%' } }}>Add to Cart</Button>
+              <Button 
+                variant="contained" 
+                color="error" 
+                sx={{ fontWeight: 600, py: 1.5, borderRadius: 2, width: { xs: '100%', md: '50%' } }}
+                onClick={handleAddToCart}
+                disabled={isAddingToCart || loading}
+              >
+                {isAddingToCart ? 'Adding...' : 'Add to Cart'}
+              </Button>
             </Box>
           </Box>
         )}
